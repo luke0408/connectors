@@ -1832,7 +1832,7 @@ export namespace INotionService {
   /**
    * @title Database property information
    */
-  export interface IDatabasePropertyInfo {
+  export type IDatabasePropertyInfo = {
     /**
      * database property unique id
      *
@@ -1846,24 +1846,41 @@ export namespace INotionService {
      * @title name
      */
     name: string;
+  } & IDatabasePropertyType<IDatabasePropertyTypes>;
 
-    /**
-     * Database property type
-     *
-     * @title type
-     */
-    type: string;
+  /**
+   * Database property type
+   *
+   * Binds the value object for the database property type.
+   *
+   * @title type
+   * @title value
+   */
+  export type IDatabasePropertyType<T extends string> = T extends string
+    ? { [K in T]: object } & Record<"type", T>
+    : never;
 
-    /**
-     * Database property value information
-     *
-     *
-     * TODO: Type confirmation and inspector structure needs to be changed
-     *
-     * @title value
-     */
-    [key: string]: any;
-  }
+  export type IDatabasePropertyTypes =
+    | "checkbox"
+    | "created_by"
+    | "created_time"
+    | "date"
+    | "email"
+    | "files"
+    | "formula"
+    | "last_edited_by"
+    | "last_edited_time"
+    | "multi_select"
+    | "number"
+    | "people"
+    | "phone_number"
+    | "relation"
+    | "rich_text"
+    | "rollup"
+    | "select"
+    | "status"
+    | "title"
+    | "url";
 
   /**
    * @title Information needed to search the page
@@ -1880,7 +1897,7 @@ export namespace INotionService {
   /**
    * @title Information needed to find an item in the database
    */
-  export interface IFindDatabaseItemInput {
+  export type IFindDatabaseItemInput = {
     /**
      * Database ID.
      */
@@ -1892,50 +1909,7 @@ export namespace INotionService {
      * @title Title
      */
     title?: string;
-
-    /**
-     * Number in database item
-     *
-     * @title Number
-     */
-    number?: number & tags.Type<"int32">;
-
-    /**
-     * url in database item
-     *
-     * @title url
-     */
-    url?: string & tags.Format<"iri">;
-
-    /**
-     * Email address in database item
-     *
-     * @title Email address
-     */
-    email?: string & tags.Format<"email">;
-
-    /**
-     * Text in database item
-     *
-     * @title text
-     */
-    rich_text?: string;
-
-    /**
-     * Phone number in database item
-     *
-     * @title Phone number
-     */
-    phone_number?: string;
-
-    /**
-     * When searching for a database item, multiple attributes can come up (title, number, url, email, text, phone number)
-     * Since the values coming for each attribute are different, declare it as any
-     *
-     * TODO: Type confirmation and changes to fit the inspector structure are needed
-     */
-    [key: string]: any;
-  }
+  } & IDatabasePropertyType<IDatabasePropertyTypes>;
 
   /**
    * @title Page Information
